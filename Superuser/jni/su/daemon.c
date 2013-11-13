@@ -15,6 +15,8 @@
 ** limitations under the License.
 */
 
+#define _GNU_SOURCE /* for unshare() */
+
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/un.h>
@@ -34,9 +36,10 @@
 #include <stdarg.h>
 #include <sys/types.h>
 #include <pthread.h>
+#include <sched.h>
 #include <termios.h>
 
-#ifdef SUPERUSER_EMBEDDED
+#ifdef SUPERUSER_EMBEDEDED
 #include <cutils/multiuser.h>
 #endif
 
@@ -212,6 +215,7 @@ static int daemon_accept(int fd) {
         daemon_from_pid = credentials.pid;
     }
 
+    int mount_storage = read_int(fd);
     int argc = read_int(fd);
     if (argc < 0 || argc > 512) {
         LOGE("unable to allocate args: %d", argc);
@@ -332,7 +336,7 @@ static int daemon_accept(int fd) {
             outfd = pts;
         }
 
-#ifdef SUPERUSER_EMBEDDED
+#ifdef SUPERUSER_EMBEDEDED
         if (mount_storage) {
             mount_emulated_storage(multiuser_get_user_id(daemon_from_uid));
         }
@@ -395,19 +399,6 @@ int run_daemon() {
      */
     unlink(sun.sun_path);
     unlink(REQUESTOR_DAEMON_PATH);
-
-    /*
-     * Mount emulated storage, if present. Normally that's done by zygote,
-     * but as we're started via init, we have to do it ourselves.
-     */
-    const char *emulated_source = getenv("EMULATED_STORAGE_SOURCE");
-    const char *emulated_target = getenv("EMULATED_STORAGE_TARGET");
-    if (emulated_source && *emulated_source && emulated_target && *emulated_target) {
-        if (mount(emulated_source, emulated_target, NULL,
-                MS_BIND | MS_NOEXEC | MS_NOSUID, NULL) < 0) {
-            PLOGE("mount emulated storage");
-        }
-    }
 
     int previous_umask = umask(027);
     mkdir(REQUESTOR_DAEMON_PATH, 0777);
@@ -478,14 +469,21 @@ int connect_daemon(int argc, char *argv[]) {
     }
 
     LOGD("connecting client %d", getpid());
+
+    int mount_storage = getenv("MOUNT_EMULATED_STORAGE") != NULL;
+
     write_int(socketfd, getpid());
     write_int(socketfd, isatty(STDIN_FILENO));
     write_int(socketfd, uid);
     write_int(socketfd, getppid());
-    write_int(socketfd, argc);
+    write_int(socketfd, mount_storage);
+    write_int(socketfd, mount_storage ? argc - 1 : argc);
 
     int i;
     for (i = 0; i < argc; i++) {
+        if (i == 1 && mount_storage) {
+            continue;
+        }
         write_string(socketfd, argv[i]);
     }
 
