@@ -36,6 +36,10 @@
 #include <pthread.h>
 #include <termios.h>
 
+#ifdef SUPERUSER_EMBEDDED
+#include <cutils/multiuser.h>
+#endif
+
 #include "su.h"
 #include "utils.h"
 
@@ -90,6 +94,43 @@ static void write_string(int fd, char* val) {
         exit(-1);
     }
 }
+
+#ifdef SUPERUSER_EMBEDDED
+static void mount_emulated_storage(int user_id) {
+    const char *emulated_source = getenv("EMULATED_STORAGE_SOURCE");
+    const char *emulated_target = getenv("EMULATED_STORAGE_TARGET");
+    const char* legacy = getenv("EXTERNAL_STORAGE");
+
+    if (!emulated_source || !emulated_target) {
+        // No emulated storage is present
+        return;
+    }
+
+    // Create a second private mount namespace for our process
+    if (unshare(CLONE_NEWNS) < 0) {
+        PLOGE("unshare");
+        return;
+    }
+
+    if (mount("rootfs", "/", NULL, MS_SLAVE | MS_REC, NULL) < 0) {
+        PLOGE("mount rootfs as slave");
+        return;
+    }
+
+    // /mnt/shell/emulated -> /storage/emulated
+    if (mount(emulated_source, emulated_target, NULL, MS_BIND, NULL) < 0) {
+        PLOGE("mount emulated storage");
+    }
+
+    char target_user[PATH_MAX];
+    snprintf(target_user, PATH_MAX, "%s/%d", emulated_target, user_id);
+
+    // /mnt/shell/emulated/<user> -> /storage/emulated/legacy
+    if (mount(target_user, legacy, NULL, MS_BIND | MS_REC, NULL) < 0) {
+        PLOGE("mount legacy path");
+    }
+}
+#endif
 
 static int run_daemon_child(int infd, int outfd, int errfd, int argc, char** argv) {
     if (-1 == dup2(outfd, STDOUT_FILENO)) {
@@ -290,6 +331,12 @@ static int daemon_accept(int fd) {
             infd = pts;
             outfd = pts;
         }
+
+#ifdef SUPERUSER_EMBEDDED
+        if (mount_storage) {
+            mount_emulated_storage(multiuser_get_user_id(daemon_from_uid));
+        }
+#endif
 
         return run_daemon_child(infd, outfd, errfd, argc, argv);
     }
