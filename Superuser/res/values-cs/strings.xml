@@ -15,9 +15,10 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <string name="superuser">Superuser</string>
   <string name="allow">Povolit</string>
+  <string name="allow_countdown">Povolit (%1$s)</string>
   <string name="deny">Zakázat</string>
   <string name="status_incoming">Příchozí požadavek na Superuser\u2026</string>
   <string name="unknown_uid">Neznámé UID: %s</string>
@@ -98,7 +99,7 @@
   <string name="apps_and_adb">Aplikace a ADB</string>
   <string name="whats_new">Co je nového</string>
   <string name="rate">Ohodnotit</string>
-  <string name="theme">Téma</string>
+  <string name="theme">Motiv</string>
   <string name="light">Světlé</string>
   <string name="dark">Tmavé</string>
   <string name="pin_disabled">Superuser ochrana PINem vypnuta</string>

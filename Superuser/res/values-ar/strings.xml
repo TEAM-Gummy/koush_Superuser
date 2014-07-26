@@ -15,9 +15,10 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <string name="superuser">مستخدم خارق</string>
   <string name="allow">يسمح</string>
+  <string name="allow_countdown">سماح (%1$s)</string>
   <string name="deny">رفض</string>
   <string name="status_incoming">وارد طلب المستخدم الخارق \u2026</string>
   <string name="unknown_uid">UID غير معروف: %s</string>
@@ -29,7 +30,7 @@
   <string name="uid_header">طلب UID:</string>
   <string name="command_header">الأمر:</string>
   <string name="this_time_only">هذه المرة فقط</string>
-  <string name="remember_for">تذكر الاختيار لي %s دقائة</string>
+  <string name="remember_for">تذكر الاختيار لـ %s دقائق</string>
   <string name="remember_forever">تذكر الخيار إلى الأبد</string>
   <string name="interactive">التفاعلية</string>
   <string name="logs">سجلات</string>

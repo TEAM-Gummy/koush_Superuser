@@ -15,9 +15,10 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
   <string name="superuser">Superuser</string>
   <string name="allow">Leisti</string>
+  <string name="allow_countdown">Leisti (%1$s)</string>
   <string name="deny">Atmesti</string>
   <string name="status_incoming">„Superuser“ užklausa\u2026</string>
   <string name="unknown_uid">Nežinomas UID: %s</string>
@@ -29,7 +30,7 @@
   <string name="uid_header">Prašoma UID:</string>
   <string name="command_header">Komanda:</string>
   <string name="this_time_only">Tik šį kartą</string>
-  <string name="remember_for">Prisiminti pasirinkimą %s minučių</string>
+  <string name="remember_for">Prisiminti pasirinkimą %s min.</string>
   <string name="remember_forever">Prisiminti pasirinkimą</string>
   <string name="interactive">Interaktyvus</string>
   <string name="logs">Įrašai</string>
@@ -42,7 +43,7 @@
   <string name="pin_protection">PIN kodo apsauga</string>
   <string name="pin_protection_summary">Reikalauti pateikti PIN kodą tam, kad patvirtinti „Superuser“ užklausas</string>
   <string name="request_timeout">Užklausos delsimas</string>
-  <string name="request_timeout_summary">„Superuser“ užklausos pasibaigs ir bus atmestos po %s sekundžių</string>
+  <string name="request_timeout_summary">„Superuser“ užklausos pasibaigs ir bus atmestos po %s sek.</string>
   <string name="notifications">Pranešimai</string>
   <string name="none">Nerodomi</string>
   <string name="notifications_summary">%s rodomas kai programai bus suteiktos arba atmestos „Superuser“ teisės</string>
@@ -52,7 +53,7 @@
   <string name="confirm_pin">Patvirtinkite PIN kodą</string>
   <string name="pin_mismatch">PIN kodas nesutampa</string>
   <string name="pin_set">„Superuser“ PIN kodo apsauga įjungta</string>
-  <string name="number_seconds">%s sekundžių</string>
+  <string name="number_seconds">%s sek.</string>
   <string name="superuser_granted">„Superuser“ suteiktas %s</string>
   <string name="superuser_denied">„Superuser“ atmestas %s</string>
   <string name="toast">Informacinis langelis</string>
